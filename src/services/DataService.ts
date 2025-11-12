@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { AuthService } from './AuthService';
-import { DataStack, ApiStack } from '../../../infra/outputs.json';
+import { sfDataStack, sfApiStack } from '../../../infra/outputs.json';
 import { type SpaceEntry } from '../components/model/model';
 
-const spacesUrl = ApiStack.SpacesApiEndpoint36C4F3B6 + 'spaces';
+const spacesUrl = sfApiStack.SpacesApiEndpoint36C4F3B6 + 'spaces';
 
 export class DataService {
   private authService: AuthService;
@@ -62,7 +62,7 @@ export class DataService {
     const arrayBuffer = await file.arrayBuffer(); //<-- NEW format
 
     const command = new PutObjectCommand({
-      Bucket: DataStack.SpaceFinderPhotosBucketName,
+      Bucket: sfDataStack.SpaceFinderPhotosBucketName,
       Key: file.name,
       ACL: 'public-read',
       Body: arrayBuffer, // compatible with SDK in browser

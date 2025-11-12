@@ -1,6 +1,6 @@
 import { type SignInOutput, fetchAuthSession, signIn, getCurrentUser, type AuthUser } from '@aws-amplify/auth';
 import { Amplify } from 'aws-amplify';
-import { AuthStack } from '../../../infra/outputs.json';
+import { sfAuthStack } from '../../../infra/outputs.json';
 import { CognitoIdentityClient } from '@aws-sdk/client-cognito-identity';
 import { fromCognitoIdentityPool } from '@aws-sdk/credential-providers';
 
@@ -9,9 +9,9 @@ const awsRegion = 'eu-central-1';
 Amplify.configure({
   Auth: {
     Cognito: {
-      userPoolId: AuthStack.SpaceUserPoolId,
-      userPoolClientId: AuthStack.SpaceUserPoolClientId,
-      identityPoolId: AuthStack.SpaceIdentityPoolId,
+      userPoolId: sfAuthStack.SpaceUserPoolId,
+      userPoolClientId: sfAuthStack.SpaceUserPoolClientId,
+      identityPoolId: sfAuthStack.SpaceIdentityPoolId,
     },
   },
 });
@@ -88,13 +88,13 @@ export class AuthService {
   }
 
   private async generateTemporaryCredentials() {
-    const cognitoIdentityPool = `cognito-idp.${awsRegion}.amazonaws.com/${AuthStack.SpaceUserPoolId}`;
+    const cognitoIdentityPool = `cognito-idp.${awsRegion}.amazonaws.com/${sfAuthStack.SpaceUserPoolId}`;
     const cognitoIdentity = new CognitoIdentityClient({
       credentials: fromCognitoIdentityPool({
         clientConfig: {
           region: awsRegion,
         },
-        identityPoolId: AuthStack.SpaceIdentityPoolId,
+        identityPoolId: sfAuthStack.SpaceIdentityPoolId,
         logins: {
           [cognitoIdentityPool]: this.jwtToken!,
         },
